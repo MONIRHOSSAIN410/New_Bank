@@ -1,292 +1,184 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-// List of supported banks with distinct themes and details
-const BANKS = [
-  {
-    id: 'chase',
-    name: 'Chase Bank',
-    address: '270 Park Ave, New York, NY 10017',
-    colorTheme: 'bg-blue-50 border-blue-200 text-blue-900',
-    logoColor: 'text-blue-700',
-    micrPrefix: '⑆021000021⑈',
-  },
-  {
-    id: 'wells-fargo',
-    name: 'Wells Fargo',
-    address: '420 Montgomery St, San Francisco, CA 94104',
-    colorTheme: 'bg-amber-50 border-amber-200 text-amber-900',
-    logoColor: 'text-amber-700',
-    micrPrefix: '⑆121000248⑈',
-  },
-  {
-    id: 'bofa',
-    name: 'Bank of America',
-    address: '100 N Tryon St, Charlotte, NC 28255',
-    colorTheme: 'bg-red-50 border-red-200 text-red-900',
-    logoColor: 'text-red-700',
-    micrPrefix: '⑆026009593⑈',
-  },
-  {
-    id: 'citibank',
-    name: 'Citibank',
-    address: '388 Greenwich St, New York, NY 10013',
-    colorTheme: 'bg-sky-50 border-sky-200 text-sky-900',
-    logoColor: 'text-sky-600',
-    micrPrefix: '⑆021000089⑈',
-  },
-  {
-    id: 'custom',
-    name: 'Custom Bank',
-    address: '123 Financial Way, Local City',
-    colorTheme: 'bg-slate-50 border-slate-200 text-slate-900',
-    logoColor: 'text-slate-700',
-    micrPrefix: '⑆999999999⑈',
-  }
-];
-
-export default function CheckPrinter() {
-  const [selectedBank, setSelectedBank] = useState(BANKS[0]);
-  const [customBankName, setCustomBankName] = useState('');
-  const [checkData, setCheckData] = useState({
-    date: new Date().toLocaleDateString('en-US'),
-    payee: '',
-    amountNumber: '',
-    amountWords: '',
-    memo: '',
-    checkNumber: '1004',
+export default function ChequePrinter() {
+  // Dynamic Cheque State
+  const [payTo, setPayTo] = useState("John Doe");
+  const [amountWords, setAmountWords] = useState("Fifty Thousand Taka Only");
+  const [amount, setAmount] = useState("50,000/-");
+  const [date, setDate] = useState({
+    d1: "2", d2: "0",
+    m1: "0", m2: "7",
+    y1: "2", y2: "0", y3: "2", y4: "6",
   });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setCheckData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleBankChange = (e) => {
-    const bankId = e.target.value;
-    const bank = BANKS.find(b => b.id === bankId);
-    setSelectedBank(bank);
-    if (bankId !== 'custom') {
-      setCustomBankName('');
-    }
-  };
+  const [accountName, setAccountName] = useState("S M SALEHUR RAHMAN");
+  const [accountNo, setAccountNo] = useState("0026010014592");
+  const [chequeNo, setChequeNo] = useState("SBA 5944952");
 
   const handlePrint = () => {
     window.print();
   };
 
-  // Determine active bank name for render
-  const activeBankName = selectedBank.id === 'custom' && customBankName 
-    ? customBankName 
-    : selectedBank.name;
-
   return (
-    <div className="min-h-screen bg-gray-100 p-6 sm:p-10 print:bg-white print:p-0">
-      
-      {/* Control Panel / Input Form (Hidden during print) */}
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-6 mb-8 print:hidden">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">
-          Bank Check Printing System
+    <div className="min-h-screen bg-slate-100 p-6 flex flex-col items-center justify-center font-sans">
+      {/* ---------------- CONTROL PANEL (Hidden during print) ---------------- */}
+      <div className="print:hidden bg-white p-6 rounded-xl shadow-md mb-8 w-full max-w-3xl border border-slate-200">
+        <h2 className="text-xl font-bold text-slate-800 mb-4 border-b pb-2">
+          Cheque Generator & Printer
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          {/* Bank Selector */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Select Bank</label>
-            <select
-              value={selectedBank.id}
-              onChange={handleBankChange}
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-            >
-              {BANKS.map((bank) => (
-                <option key={bank.id} value={bank.id}>
-                  {bank.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Conditional Custom Bank Input */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              {selectedBank.id === 'custom' ? 'Custom Bank Name' : 'Check Number'}
-            </label>
-            {selectedBank.id === 'custom' ? (
-              <input
-                type="text"
-                value={customBankName}
-                onChange={(e) => setCustomBankName(e.target.value)}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="Enter bank name..."
-              />
-            ) : (
-              <input
-                type="text"
-                name="checkNumber"
-                value={checkData.checkNumber}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="e.g. 1004"
-              />
-            )}
-          </div>
-
-          {/* Date & Amount */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+            <label className="block text-slate-600 font-medium mb-1">Pay To:</label>
             <input
               type="text"
-              name="date"
-              value={checkData.date}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="MM/DD/YYYY"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Amount ($)</label>
-            <input
-              type="number"
-              name="amountNumber"
-              value={checkData.amountNumber}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="e.g., 1250.50"
+              value={payTo}
+              onChange={(e) => setPayTo(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500 outline-none"
             />
           </div>
 
-          {/* Payee */}
+          <div>
+            <label className="block text-slate-600 font-medium mb-1">Amount (TK):</label>
+            <input
+              type="text"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500 outline-none"
+            />
+          </div>
+
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Pay to the Order Of</label>
+            <label className="block text-slate-600 font-medium mb-1">Amount in Words:</label>
             <input
               type="text"
-              name="payee"
-              value={checkData.payee}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="Payee Name"
+              value={amountWords}
+              onChange={(e) => setAmountWords(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500 outline-none"
             />
           </div>
 
-          {/* Legal Words Amount */}
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Amount in Words</label>
+          <div>
+            <label className="block text-slate-600 font-medium mb-1">Account Name:</label>
             <input
               type="text"
-              name="amountWords"
-              value={checkData.amountWords}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="One Thousand Two Hundred Fifty and 50/100"
+              value={accountName}
+              onChange={(e) => setAccountName(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500 outline-none"
             />
           </div>
 
-          {/* Memo & Extra Custom Check# if custom bank chosen */}
-          <div className={selectedBank.id === 'custom' ? 'md:col-span-1' : 'md:col-span-2'}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Memo</label>
+          <div>
+            <label className="block text-slate-600 font-medium mb-1">Account No:</label>
             <input
               type="text"
-              name="memo"
-              value={checkData.memo}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="Invoice #1234"
+              value={accountNo}
+              onChange={(e) => setAccountNo(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500 outline-none"
             />
           </div>
-
-          {selectedBank.id === 'custom' && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Check Number</label>
-              <input
-                type="text"
-                name="checkNumber"
-                value={checkData.checkNumber}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="1004"
-              />
-            </div>
-          )}
         </div>
 
         <button
           onClick={handlePrint}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-md transition duration-200"
+          className="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-lg shadow transition flex items-center justify-center gap-2"
         >
-          Print Check
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Print Cheque
         </button>
       </div>
 
-      {/* Check Preview & Printable Area Container */}
-      <div className="max-w-4xl mx-auto flex justify-center print-container">
-        {/* Check Element */}
-        <div className={`w-[6.0in] h-[2.75in] border rounded-lg shadow-sm p-4 relative font-serif text-gray-800 transition-colors duration-300 ${selectedBank.colorTheme} printable-check`}>
-          
-          {/* Top Row: Selected Bank Info, Check #, & Date */}
-          <div className="flex justify-between items-start text-xs">
+      {/* ---------------- CHEQUE TEMPLATE ---------------- */}
+      <div 
+        id="cheque" 
+        className="relative bg-[#f8f7eb] text-slate-900 border border-slate-300 w-[780px] h-[330px] p-6 shadow-xl rounded-sm print:shadow-none print:m-0 print:border-none select-none font-serif overflow-hidden"
+      >
+        {/* Header Section */}
+        <div className="flex justify-between items-start mb-2">
+          {/* Bank Logo & Branch Info */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-emerald-700 border-2 border-red-600 flex items-center justify-center text-white font-bold text-xs shrink-0">
+              RBL
+            </div>
             <div>
-              <p className={`font-bold uppercase tracking-wide text-xs ${selectedBank.logoColor}`}>
-                {activeBankName}
+              <h1 className="text-xl font-extrabold tracking-wide text-red-700 uppercase font-sans">
+                RUPALI BANK LIMITED
+              </h1>
+              <p className="text-[11px] leading-tight text-slate-700 font-sans">
+                Rupali Sadan Corporate Dhaka
               </p>
-              <p className="text-[9px] text-gray-500 print:hidden">
-                {selectedBank.address}
+              <p className="text-[11px] leading-tight text-slate-700 font-sans">
+                185275868
               </p>
             </div>
+          </div>
+
+          {/* Cheque Number & Date Grid */}
+          <div className="text-right">
+            <div className="text-sm font-bold tracking-widest text-slate-800 mb-2 font-sans">
+              {chequeNo}
+            </div>
             
-            <div className="flex flex-col items-end space-y-1">
-              <span className="text-[11px] font-sans font-bold text-gray-600 mr-2">
-                {checkData.checkNumber}
-              </span>
-              <div className="flex items-center space-x-1">
-                <span className="text-[9px] uppercase font-sans">Date:</span>
-                <span className="border-b border-gray-600 px-2 min-w-[90px] text-center font-sans text-xs font-semibold">
-                  {checkData.date}
-                </span>
+            <div className="flex items-center gap-1 justify-end">
+              <span className="text-xs font-bold text-slate-700 mr-1 font-sans">DATE</span>
+              <div className="flex gap-0.5 text-xs font-mono font-bold">
+                {[date.d1, date.d2, date.m1, date.m2, date.y1, date.y2, date.y3, date.y4].map((digit, idx) => (
+                  <div key={idx} className="flex flex-col items-center">
+                    <div className="w-5 h-6 border border-slate-500 bg-white/50 flex items-center justify-center">
+                      {digit}
+                    </div>
+                    <span className="text-[8px] text-slate-500 font-sans font-normal mt-0.5">
+                      {idx < 2 ? 'D' : idx < 4 ? 'M' : 'Y'}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Middle Row: Payee and Numeric Amount */}
-          <div className="mt-2 flex items-end justify-between">
-            <div className="flex items-end flex-grow mr-4">
-              <span className="text-[9px] uppercase font-sans whitespace-nowrap mr-2">Pay To The Order Of:</span>
-              <span className="border-b border-gray-600 flex-grow px-2 font-bold text-sm italic tracking-wide h-6">
-                {checkData.payee}
-              </span>
-            </div>
-            <div className="flex items-center border border-gray-400 bg-white px-2 py-1 min-w-[110px] h-7 font-sans font-bold">
-              <span>$</span>
-              <span className="text-right w-full">{checkData.amountNumber}</span>
+        {/* Pay To Row */}
+        <div className="mt-6 flex items-baseline gap-2">
+          <span className="text-sm font-bold shrink-0">Pay To</span>
+          <div className="border-b-2 border-slate-400 border-dotted flex-grow px-2 font-semibold text-lg text-slate-800">
+            {payTo}
+          </div>
+          <span className="text-sm font-bold shrink-0">Or Bearer</span>
+        </div>
+
+        {/* Sum of Taka & Amount Box Row */}
+        <div className="mt-4 flex items-center justify-between gap-4">
+          <div className="flex-grow flex items-baseline gap-2">
+            <span className="text-sm font-bold shrink-0">The sum of Taka</span>
+            <div className="border-b-2 border-slate-400 border-dotted flex-grow px-2 font-semibold text-sm text-slate-800 leading-snug">
+              {amountWords}
             </div>
           </div>
 
-          {/* Amount in Words Row */}
-          <div className="mt-3 flex items-end">
-            <span className="border-b border-gray-600 flex-grow px-2 font-medium text-xs italic h-5">
-              {checkData.amountWords}
-            </span>
-            <span className="text-[9px] uppercase font-sans ml-2 whitespace-nowrap">Dollars</span>
+          {/* Amount Box */}
+          <div className="w-48 h-12 border-2 border-slate-600 bg-white/60 flex items-center px-3 font-sans font-bold text-lg text-slate-900 shrink-0">
+            <span className="text-sm mr-2 font-semibold">TK.</span>
+            <span>{amount}</span>
+          </div>
+        </div>
+
+        {/* Account Info & Signature Line */}
+        <div className="mt-6 flex justify-between items-end">
+          <div className="text-xs font-sans font-bold text-slate-800 leading-relaxed">
+            <p>Name : <span className="uppercase">{accountName}</span></p>
+            <p>A/C No. : {accountNo}</p>
           </div>
 
-          {/* Bottom Row: Memo, Signature Line & MICR Encoding */}
-          <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-            <div className="flex items-end w-4/12">
-              <span className="text-[9px] uppercase font-sans mr-1">Memo:</span>
-              <span className="border-b border-gray-600 flex-grow px-1 text-xs h-4">
-                {checkData.memo}
-              </span>
-            </div>
-            
-            {/* Dynamic Bank Routing Symbol numbers at the bottom */}
-            <div className="text-center font-mono text-[10px] tracking-[2px] text-gray-700 mx-1">
-              {selectedBank.micrPrefix} 000123456789⑈ {checkData.checkNumber}
-            </div>
-
-            <div className="w-4/12 flex flex-col items-center">
-              <div className="w-full border-b border-gray-600 h-6"></div>
-              <span className="text-[8px] uppercase font-sans mt-0.5">Authorized Signature</span>
-            </div>
+          <div className="text-right">
+            <div className="w-48 border-t border-slate-500 mb-1"></div>
+            <p className="text-[9px] text-slate-500 font-sans">Please Sign Above This Line</p>
           </div>
-          
+        </div>
+
+        {/* MICR Bottom Code Strip */}
+        <div className="absolute bottom-3 left-0 w-full px-12 flex justify-center items-center font-mono text-base tracking-[0.25em] text-slate-800">
+          <span>⑈5944952⑈ 185275868⑈ 0026010014592⑈ 10</span>
         </div>
       </div>
     </div>
